@@ -1,0 +1,15 @@
+[Unit]
+Description=nginx web server
+After=network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+PIDFile=NGINX_INPATH/logs/nginx.pid
+ExecStart=NGINX_INPATH/sbin/nginx -c NGINX_INPATH/conf/nginx.conf
+ExecReload=NGINX_INPATH/sbin/nginx -s reload
+ExecStop=NGINX_INPATH/sbin/nginx -s stop
+Restart=on-failure
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

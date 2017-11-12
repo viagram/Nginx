@@ -181,9 +181,11 @@ printnew -green "编译和安装libmaxminddb..."
 ./configure
 if ! make; then
     printnew -red "编译失败."
+    exit 1
 fi
 if ! make install; then
     printnew -red "安装失败."
+    exit 1
 fi
 if ! egrep -i "/usr/local/lib" /etc/ld.so.conf.d/local.conf >/dev/null 2>&1; then
     echo "/usr/local/lib">>/etc/ld.so.conf.d/local.conf
@@ -263,9 +265,11 @@ printnew -green "编译和安装Nginx..."
     --prefix=${NGINX_INPATH}
 if ! make; then
     printnew -red "编译失败."
+    exit 1
 fi
 if ! make install; then
     printnew -red "安装失败."
+    exit 1
 fi
 cd ..
 

@@ -165,12 +165,10 @@ printnew -green "安装基础软件包..."
 yum -y install libtool libevent gettext-devel git wget unzip tar ntpdate gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl net-tools
 
 cur_dir=${PWD}/nginx_install
-if [[ ! -d "${cur_dir}" ]]; then
-    mkdir -p ${cur_dir}
-else
+if [[ -d "${cur_dir}" ]]; then
     rm -rf ${cur_dir}
 fi
-cd $cur_dir
+mkdir -p ${cur_dir} && cd $cur_dir
 
 printnew -green "克隆libmaxminddb源码..."
 if ! git clone --recursive https://github.com/maxmind/libmaxminddb; then

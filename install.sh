@@ -181,14 +181,17 @@ if [[ -d "${cur_dir}" ]]; then
 fi
 mkdir -p ${cur_dir} && cd $cur_dir
 
-printnew -green "克隆libmaxminddb源码..."
-if ! git clone --recursive https://github.com/maxmind/libmaxminddb; then
-    printnew -red "克隆libmaxminddb源码失败."
-    exit 1
+printnew -green "下载libmaxminddb源码..."
+#git clone --recursive https://github.com/maxmind/libmaxminddb.git
+VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
+if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
+    printnew -red "下载libmaxminddb-${VERSION}失败."
+fi
+if ! tar zxf libmaxminddb-${VERSION}.tar.gz; then
+    printnew -red "解压libmaxminddb-${VERSION}失败."
 fi
 printnew -green "编译和安装libmaxminddb..."
-cd libmaxminddb
-./bootstrap
+cd libmaxminddb-${VERSION}
 ./configure
 if ! make; then
     printnew -red "编译失败."

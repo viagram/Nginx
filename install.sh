@@ -167,6 +167,8 @@ yum -y install libtool libevent gettext-devel git wget unzip tar ntpdate gcc gcc
 cur_dir=${PWD}/nginx_install
 if [[ ! -d "${cur_dir}" ]]; then
     mkdir -p ${cur_dir}
+else
+    rm -rf ${cur_dir}
 fi
 cd $cur_dir
 
@@ -271,7 +273,7 @@ cd ..
 
 printnew -green "下载GeoLite2-Country.mmdb..."
 [[ -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz ]] && rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
-if ! wget -O ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz -c http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz --no-check-certificate
+if ! wget -O ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz -c http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz --no-check-certificate; then
     printnew -red "下载GeoLite2-Country.mmdb失败."
     exit 1
 fi

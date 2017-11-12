@@ -163,7 +163,7 @@ fi
 
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y 'Development Tools'
-yum -y install libtool libevent gettext-devel git wget unzip tar ntpdate gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl net-tools
+yum -y install libtool libevent gettext-devel gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget net-tools unzip wget
 
 cur_dir=${PWD}/nginx_install
 if [[ -d "${cur_dir}" ]]; then

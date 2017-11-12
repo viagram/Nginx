@@ -176,8 +176,8 @@ if ! git clone --recursive https://github.com/maxmind/libmaxminddb; then
     printnew -red "克隆libmaxminddb源码失败."
     exit 1
 fi
-cd libmaxminddb
 printnew -green "编译和安装libmaxminddb..."
+cd libmaxminddb
 ./bootstrap
 ./configure
 if ! make; then

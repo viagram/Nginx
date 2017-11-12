@@ -311,51 +311,24 @@ if ! gunzip -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz; then
 fi
 rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
 
-printnew -green "下载和安装Nginx服务..."
+printnew -green "安装和配置Nginx服务..."
+\cp -f 404.html ${NGINX_INPATH}/html/404.html
+\cp -f index.html ${NGINX_INPATH}/html/index.html
+sed -i "s/CPUSU/${CPUSU}/g" nginx.conf
+\cp -f nginx.conf ${NGINX_INPATH}/conf/nginx.conf
 if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
-    if ! wget -O nginx -c  https://raw.githubusercontent.com/viagram/Nginx/master/CentOS-6 --no-check-certificate; then
-        printnew -red "下载Nginx服务配置失败."
-        exit 1
-    fi
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx
     \cp -f nginx /etc/init.d/nginx
     chmod 775 /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
+    service nginx restart
 elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
-    if ! wget -O nginx.service -c  https://raw.githubusercontent.com/viagram/Nginx/master/CentOS-7 --no-check-certificate; then
-        printnew -red "下载Nginx服务配置失败."
-        exit 1
-    fi
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
     \cp -f nginx.service /usr/lib/systemd/system/nginx.service
     chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1
     systemctl enable nginx.service
     systemctl daemon-reload
-fi
-if ! wget -O 404.html -c  https://raw.githubusercontent.com/viagram/Nginx/master/404.html --no-check-certificate; then
-    printnew -red "下载404.html失败."
-fi
-\cp -f 404.html ${NGINX_INPATH}/html/404.html
-if ! wget -O index.html -c  https://raw.githubusercontent.com/viagram/Nginx/master/index.html --no-check-certificate; then
-    printnew -red "下载index.html失败."
-fi
-\cp -f index.html ${NGINX_INPATH}/html/index.html
-if ps -ef | grep -v grep | grep -i 'php-fpm'; then
-    if ! wget -O nginx.conf -c  https://raw.githubusercontent.com/viagram/Nginx/master/nginx.conf --no-check-certificate; then
-        printnew -red "下载nginx.conf失败."
-    fi
-else
-    if ! wget -O nginx.conf -c  https://raw.githubusercontent.com/viagram/Nginx/master/nginx-php.conf --no-check-certificate; then
-        printnew -red "下载nginx.conf失败."
-    fi
-fi
-sed -i "s/CPUSU/${CPUSU}/g" nginx.conf
-\cp -f nginx.conf ${NGINX_INPATH}/conf/nginx.conf
-
-if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
-    service nginx restart
-elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
     systemctl start nginx
 fi
 

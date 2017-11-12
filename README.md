@@ -8,6 +8,6 @@
 
 安装方法:
 
-   git clone https://github.com/viagram/Nginx.git && cd Nginx && sh install.sh
+    git clone https://github.com/viagram/Nginx.git && cd Nginx && sh install.sh
 
 按提示操作, 基本按几下回车键即可.

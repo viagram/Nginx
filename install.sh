@@ -323,7 +323,7 @@ if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
     chmod 775 /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
-    if service nginx restart; then
+    if service nginx start; then
         printnew -green "Nginx 启动成功."
     else
         printnew -green "Nginx 启动失败."

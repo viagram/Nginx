@@ -153,6 +153,7 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+CUR_DIR="$(dirname $(readlink -f $0))/"
 NGINX_INPATH="/usr/local/nginx"
 CPUSU=$(cat /proc/cpuinfo | grep processor | wc -l)
 #################################################################################################################################################
@@ -184,12 +185,6 @@ printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
 yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget
 yum -y install libtool libevent gettext-devel ntpdate
-
-CUR_DIR=${PWD}/nginx_install
-if [[ -d "${CUR_DIR}" ]]; then
-    rm -rf ${CUR_DIR}
-fi
-mkdir -p ${CUR_DIR} && cd ${CUR_DIR}
 
 printnew -green "下载libmaxminddb源码..."
 #git clone --recursive https://github.com/maxmind/libmaxminddb.git
@@ -228,6 +223,7 @@ if ! tar zxf ${NAME}.tar.gz; then
     printnew -red "解压nginx源码失败."
     exit 1
 fi
+
 cd ${NAME}
 
 printnew -green "下载和克隆nginx组件源码..."

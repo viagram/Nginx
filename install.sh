@@ -8,7 +8,6 @@ MY_SCRIPT="$(dirname $(readlink -f $0))/$(basename $0)"
 
 echo -e "\033[33m"
 cat <<'EOF'
-
 ###################################################################
 #                     _                                           #
 #              __   _(_) __ _  __ _ _ __ __ _ _ __ ___            #
@@ -163,6 +162,7 @@ if [[ "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" && "$(Check_OS)" 
     exit 1
 fi
 
+cd ${CUR_DIR}
 printnew -a -green "获取nginx信息..."
 DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.tar\.g[z$]' | head -n 1)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')

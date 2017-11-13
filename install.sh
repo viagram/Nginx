@@ -162,7 +162,17 @@ if [[ "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" && "$(Check_OS)" 
     exit 1
 fi
 
-printnew -green "将进行 [Nginx] 安装进程."
+printnew -a -green "获取nginx信息..."
+DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.tar\.g[z$]' | head -n 1)
+NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
+if [[ -z ${NAME} ]]; then
+    printnew -r -red "获取nginx信息失败."
+    exit 1
+else
+    printnew -r -green "成功."
+fi
+
+printnew -green "将进行 ${NAME} 安装."
 read -p "输入[y/n]选择是否继续, 默认为y：" is_go
 [[ -z "${is_go}" ]] && is_go='y'
 if [[ ${is_go} != "y" && ${is_go} != "Y" ]]; then
@@ -206,14 +216,6 @@ if ! egrep -i "/usr/local/lib" /etc/ld.so.conf.d/local.conf >/dev/null 2>&1; the
 fi
 ldconfig >/dev/null 2>&1
 cd ..
-
-printnew -green "获取nginx信息..."
-DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.tar\.g[z$]' | head -n 1)
-NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
-if [[ -z ${NAME} ]]; then
-    printnew -red "获取nginx信息失败."
-    exit 1
-fi
 
 printnew -green "下载nginx源码..."
 if ! wget -O ${NAME}.tar.gz -c http://nginx.org${DOWN} --no-check-certificate; then

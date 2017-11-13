@@ -196,9 +196,11 @@ printnew -green "下载libmaxminddb源码..."
 VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
 if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
+    exit 1
 fi
 if ! tar zxf libmaxminddb-${VERSION}.tar.gz; then
     printnew -red "解压libmaxminddb-${VERSION}失败."
+    exit 1
 fi
 printnew -green "编译和安装libmaxminddb..."
 cd libmaxminddb-${VERSION}

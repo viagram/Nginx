@@ -312,6 +312,7 @@ fi
 rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
 
 printnew -green "安装和配置Nginx服务..."
+cd ${CUR_DIR}
 \cp -f 404.html ${NGINX_INPATH}/html/404.html
 \cp -f index.html ${NGINX_INPATH}/html/index.html
 sed -i "s/CPUSU/${CPUSU}/g" nginx.conf

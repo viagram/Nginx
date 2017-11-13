@@ -323,14 +323,22 @@ if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
     chmod 775 /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
-    service nginx restart
+    if service nginx restart; then
+        printnew -green "Nginx 启动成功."
+    else
+        printnew -green "Nginx 启动失败."
+    fi
 elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
     \cp -f nginx.service /usr/lib/systemd/system/nginx.service
     chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1
-    systemctl enable nginx.service
-    systemctl daemon-reload
-    systemctl start nginx
+    systemctl enable nginx.service >/dev/null 2>&1
+    systemctl daemon-reload >/dev/null 2>&1
+    if systemctl start nginx; then
+        printnew -green "Nginx 启动成功."
+    else
+        printnew -green "Nginx 启动失败."
+    fi
 fi
 
 cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR}

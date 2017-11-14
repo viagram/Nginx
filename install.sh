@@ -164,7 +164,7 @@ fi
 
 cd ${CUR_DIR}
 printnew -a -green "获取nginx信息..."
-DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.tar\.g[z$]' | head -n 1)
+DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}\.tar\.g[z$]' | sort -Vu)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 if [[ -z ${NAME} ]]; then
     printnew -r -red "获取nginx信息失败."

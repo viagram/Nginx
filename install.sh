@@ -188,7 +188,7 @@ yum -y install libtool libevent gettext-devel ntpdate
 
 printnew -green "下载libmaxminddb源码..."
 #git clone --recursive https://github.com/maxmind/libmaxminddb.git
-VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
+VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')
 if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
     exit 1
@@ -250,8 +250,8 @@ if ! tar zxf ${PCRE_NAME}.tar.gz; then
     printnew -red "解压pcre源码失败."
     exit 1
 fi
-OPENSSL_URL=$(curl -sk https://www.openssl.org/source/ | egrep -io 'openssl-[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}[a-z]{1}.tar.gz' | sort -rVu | awk 'END{print "https://www.openssl.org/source/"$0}')
-OPENSSL_NAME=$(echo ${OPENSSL_URL} | egrep -io 'openssl-[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}[a-z]{1}')
+OPENSSL_URL=$(curl -sk https://www.openssl.org/source/ | egrep -io 'openssl-[0-9.]*[a-z]{1}.tar.gz' | sort -rVu | awk 'END{print "https://www.openssl.org/source/"$0}')
+OPENSSL_NAME=$(echo ${OPENSSL_URL} | egrep -io 'openssl-[0-9.]*[a-z]{1}')
 if ! wget -O ${OPENSSL_NAME}.tar.gz -c ${OPENSSL_URL} --no-check-certificate; then
     printnew -red "下载openssl源码失败."
     exit 1

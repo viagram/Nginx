@@ -95,7 +95,7 @@ function OptNET(){
     # 以前优化设置来自于网络, 具体用处嘛~~~我也不知道^_^.
     sysctl=/etc/sysctl.conf
     limits=/etc/security/limits.conf
-        sed -i '/* soft nofile/d' $limits; echo '* soft nofile 512000'>>$limits
+    sed -i '/* soft nofile/d' $limits; echo '* soft nofile 512000'>>$limits
     sed -i '/* hard nofile/d' $limits; echo '* hard nofile 1024000'>>$limits
     ulimit -n 512000
     sed -i '/net.ipv4.ip_forward/d' $sysctl; echo 'net.ipv4.ip_forward=0'>>$sysctl
@@ -164,7 +164,10 @@ fi
 
 cd ${CUR_DIR}
 printnew -a -green "获取nginx信息..."
+#稳定版
 DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
+#开发版
+#DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 if [[ -z ${NAME} ]]; then
     printnew -r -red "获取nginx信息失败."

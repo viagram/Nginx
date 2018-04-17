@@ -45,49 +45,31 @@ function Check_OS(){
 function printnew(){
     typeset -l CHK
     WENZHI=""
-    RIGHT=0
+    COLOUR=""
     HUANHANG=0
     for PARSTR in "${@}";do
         CHK="${PARSTR}"
         if echo "${CHK}" | egrep -io "^\-[[:graph:]]*" >/dev/null 2>&1; then
-            if [[ "${CHK}" == "-black" ]]; then
-                COLOUR="\033[30m"
-            elif [[ "${CHK}" == "-red" ]]; then
-                COLOUR="\033[31m"
-            elif [[ "${CHK}" == "-green" ]]; then
-                COLOUR="\033[32m"
-            elif [[ "${CHK}" == "-yellow" ]]; then
-                COLOUR="\033[33m"
-            elif [[ "${CHK}" == "-blue" ]]; then
-                COLOUR="\033[34m"
-            elif [[ "${CHK}" == "-purple" ]]; then
-                COLOUR="\033[35m"
-            elif [[ "${CHK}" == "-cyan" ]]; then
-                COLOUR="\033[36m"
-            elif [[ "${CHK}" == "-white" ]]; then
-                COLOUR="\033[37m"
-            elif [[ "${CHK}" == "-a" ]]; then
-                HUANHANG=1
-            elif [[ "${CHK}" == "-r" ]]; then
-                RIGHT=1
-            fi
+            case "${CHK}" in
+                -black) COLOUR="\033[30m";;
+                -red) COLOUR="\033[31m";;
+                -green) COLOUR="\033[32m";;
+                -yellow) COLOUR="\033[33m";;
+                -blue) COLOUR="\033[34m";;
+                -purple) COLOUR="\033[35m";;
+                -cyan) COLOUR="\033[36m";;
+                -white) COLOUR="\033[37m";;
+                -a) HUANHANG=1 ;;
+                *) COLOUR="\033[37m";;
+            esac
         else
             WENZHI+="${PARSTR}"
         fi
     done
-    COUNT=$(echo -n "${WENZHI}" | wc -L)
-    if [[ ${RIGHT} -eq 1 ]]; then
-        tput cup $(tput lines) $[$(tput cols)-${COUNT}]
-        printf "${COLOUR}%b%-${COUNT}s" "${WENZHI}"
-        tput cup $(tput lines) 0
+    if [[ ${HUANHANG} -eq 1 ]];then
+        printf "${COLOUR}%b%s \033[0m" "${WENZHI}"
     else
-        tput cup $(tput lines) 0
-        if [[ ${HUANHANG} -eq 1 ]]; then
-            printf "${COLOUR}%b%-${COUNT}s" "${WENZHI}"
-            tput cup $(tput lines) ${COUNT}
-        else
-            printf "${COLOUR}%b%-${COUNT}s\033[0m\n" "${WENZHI}"
-        fi
+        printf "${COLOUR}%b%s\033[0m\n" "${WENZHI}"
     fi
 }
 
@@ -137,9 +119,9 @@ function OptNET(){
 
 #改成北京时间
 function check_datetime(){
-    if [[ "$(Check_OS)" == "centos7" ]]; then
+    if [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
         timedatectl set-timezone Asia/Shanghai
-    elif [[ "$(Check_OS)" == "centos6" ]]; then
+    elif [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
         rm -rf /etc/localtime
         ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     fi
@@ -184,8 +166,8 @@ fi
 
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
-yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget
-yum -y install libtool libevent gettext-devel ntpdate
+yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel \
+    curl wget libtool libevent gettext-devel ntpdate
 
 printnew -green "下载libmaxminddb源码..."
 #git clone --recursive https://github.com/maxmind/libmaxminddb.git

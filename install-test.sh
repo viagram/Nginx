@@ -170,7 +170,6 @@ yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-de
     curl wget libtool libevent gettext-devel ntpdate
 
 printnew -green "下载libmaxminddb源码..."
-#git clone --recursive https://github.com/maxmind/libmaxminddb.git
 VERSION=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')
 if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
@@ -309,25 +308,42 @@ fi
 
 if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx
-    \cp -f nginx /etc/init.d/nginx
+    cp -rf nginx /etc/init.d/nginx
     chmod 775 /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
-    if service nginx start; then
-        printnew -green "Nginx 启动成功."
+    if ! service nginx status >/dev/null 2>&1; then
+        if service nginx start; then
+            printnew -green "Nginx 启动成功."
+        else
+            printnew -red "Nginx 启动失败."
+        fi
     else
-        printnew -green "Nginx 启动失败."
+        if service nginx restart; then
+            printnew -green "Nginx 重启成功."
+        else
+            printnew -red "Nginx 重启失败."
+        fi
     fi
+    
 elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
-    \cp -f nginx.service /usr/lib/systemd/system/nginx.service
+    cp -rf nginx.service /usr/lib/systemd/system/nginx.service
     chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1
     systemctl enable nginx.service >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1
-    if systemctl start nginx; then
-        printnew -green "Nginx 启动成功."
+    if ! systemctl status nginx; then
+        if systemctl start nginx; then
+            printnew -green "Nginx 启动成功."
+        else
+            printnew -red "Nginx 启动失败."
+        fi
     else
-        printnew -green "Nginx 启动失败."
+        if systemctl restart nginx; then
+            printnew -green "Nginx 重启成功."
+        else
+            printnew -red "Nginx 重启失败."
+        fi
     fi
 fi
 

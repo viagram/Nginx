@@ -312,21 +312,38 @@ if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
     chmod 775 /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
-    if service nginx start; then
-        printnew -green "Nginx 启动成功."
+    if ! service nginx status >/dev/null 2>&1; then
+        if service nginx start; then
+            printnew -green "Nginx 启动成功."
+        else
+            printnew -red "Nginx 启动失败."
+        fi
     else
-        printnew -green "Nginx 启动失败."
+        if service nginx restart; then
+            printnew -green "Nginx 重启成功."
+        else
+            printnew -red "Nginx 重启失败."
+        fi
     fi
+    
 elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
     cp -rf nginx.service /usr/lib/systemd/system/nginx.service
     chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1
     systemctl enable nginx.service >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1
-    if systemctl start nginx; then
-        printnew -green "Nginx 启动成功."
+    if ! systemctl status nginx; then
+        if systemctl start nginx; then
+            printnew -green "Nginx 启动成功."
+        else
+            printnew -red "Nginx 启动失败."
+        fi
     else
-        printnew -green "Nginx 启动失败."
+        if systemctl restart nginx; then
+            printnew -green "Nginx 重启成功."
+        else
+            printnew -red "Nginx 重启失败."
+        fi
     fi
 fi
 

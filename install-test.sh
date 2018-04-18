@@ -147,7 +147,7 @@ fi
 cd ${CUR_DIR}
 printnew -a -green "获取nginx信息..."
 #开发版
-DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
+DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 if [[ -z ${NAME} ]]; then
     printnew -r -red "获取nginx信息失败."
@@ -171,8 +171,8 @@ yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-de
 
 printnew -green "下载libmaxminddb源码..."
 #git clone --recursive https://github.com/maxmind/libmaxminddb.git
-VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')
-if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
+VERSION=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')
+if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
     exit 1
 fi
@@ -198,7 +198,7 @@ ldconfig >/dev/null 2>&1
 cd ..
 
 printnew -green "下载nginx源码..."
-if ! wget -O ${NAME}.tar.gz -c http://nginx.org${DOWN} --no-check-certificate; then
+if ! wget -O ${NAME}.tar.gz -c http://nginx.org${DOWN} --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载nginx源码失败."
     exit 1
 fi
@@ -223,9 +223,9 @@ if ! git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module
     printnew -red "克隆ngx_http_substitutions_filter_module源码失败."
     exit 1
 fi
-PCRE_URL=$(curl -sk https://ftp.pcre.org/pub/pcre/ | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}.tar.gz' | sort -Vu | awk 'END{print "https://ftp.pcre.org/pub/pcre/"$0}')
+PCRE_URL=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://ftp.pcre.org/pub/pcre/ | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}.tar.gz' | sort -Vu | awk 'END{print "https://ftp.pcre.org/pub/pcre/"$0}')
 PCRE_NAME=$(echo ${PCRE_URL} | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}')
-if ! wget -O ${PCRE_NAME}.tar.gz -c ${PCRE_URL} --no-check-certificate; then
+if ! wget -O ${PCRE_NAME}.tar.gz -c ${PCRE_URL} --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载pcre源码失败."
     exit 1
 fi
@@ -233,9 +233,9 @@ if ! tar zxf ${PCRE_NAME}.tar.gz; then
     printnew -red "解压pcre源码失败."
     exit 1
 fi
-OPENSSL_URL=$(curl -sk https://www.openssl.org/source/ | egrep -io 'openssl-[0-9.]*[a-z]{1}.tar.gz' | sort -rVu | awk 'END{print "https://www.openssl.org/source/"$0}')
+OPENSSL_URL=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://www.openssl.org/source/ | egrep -io 'openssl-[0-9.]*[a-z]{1}.tar.gz' | sort -rVu | awk 'END{print "https://www.openssl.org/source/"$0}')
 OPENSSL_NAME=$(echo ${OPENSSL_URL} | egrep -io 'openssl-[0-9.]*[a-z]{1}')
-if ! wget -O ${OPENSSL_NAME}.tar.gz -c ${OPENSSL_URL} --no-check-certificate; then
+if ! wget -O ${OPENSSL_NAME}.tar.gz -c ${OPENSSL_URL} --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载openssl源码失败."
     exit 1
 fi
@@ -243,9 +243,9 @@ if ! tar zxf ${OPENSSL_NAME}.tar.gz; then
     printnew -red "解压openssl源码失败."
     exit 1
 fi
-ZLIB_URL=$(curl -sk https://zlib.net/ | egrep -io 'zlib-([0-9]{1,2}.){3}tar.gz' | sort -Vu | awk '{print "https://zlib.net/"$0}')
+ZLIB_URL=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://zlib.net/ | egrep -io 'zlib-([0-9]{1,2}.){3}tar.gz' | sort -Vu | awk '{print "https://zlib.net/"$0}')
 ZLIB_NAME=$(echo ${ZLIB_URL} | egrep -io 'zlib-[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
-if ! wget -O ${ZLIB_NAME}.tar.gz -c ${ZLIB_URL} --no-check-certificate; then
+if ! wget -O ${ZLIB_NAME}.tar.gz -c ${ZLIB_URL} --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载zlib源码失败."
     exit 1
 fi
@@ -284,7 +284,7 @@ cd ..
 
 printnew -green "下载GeoLite2-Country.mmdb..."
 [[ -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz ]] && rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
-if ! wget -O ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz -c http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz --no-check-certificate; then
+if ! wget -O ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz -c http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz --no-check-certificate --tries=5 --timeout=10; then
     printnew -red "下载GeoLite2-Country.mmdb失败."
     exit 1
 fi

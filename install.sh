@@ -296,13 +296,20 @@ rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
 
 printnew -green "安装和配置Nginx服务..."
 cd ${CUR_DIR}
-\cp -f 404.html ${NGINX_INPATH}/html/404.html
-\cp -f index.html ${NGINX_INPATH}/html/index.html
-sed -i "s/CPUSU/${CPUSU}/g" nginx.conf
-\cp -f nginx.conf ${NGINX_INPATH}/conf/nginx.conf
+if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
+    cp -rf 404.html ${NGINX_INPATH}/html/404.html
+fi
+if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
+    cp -rf index.html ${NGINX_INPATH}/html/index.html
+fi
+if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
+    sed -i "s/CPUSU/${CPUSU}/g" nginx.conf
+    cp -rf nginx.conf ${NGINX_INPATH}/conf/nginx.conf
+fi
+
 if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx
-    \cp -f nginx /etc/init.d/nginx
+    cp -rf nginx /etc/init.d/nginx
     chmod 775 /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
@@ -313,7 +320,7 @@ if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
     fi
 elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
-    \cp -f nginx.service /usr/lib/systemd/system/nginx.service
+    cp -rf nginx.service /usr/lib/systemd/system/nginx.service
     chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1
     systemctl enable nginx.service >/dev/null 2>&1
     systemctl daemon-reload >/dev/null 2>&1

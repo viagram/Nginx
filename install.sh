@@ -51,22 +51,23 @@ function printnew(){
         CHK="${PARSTR}"
         if echo "${CHK}" | egrep -io "^\-[[:graph:]]*" >/dev/null 2>&1; then
             case "${CHK}" in
-                -black) COLOUR="\033[30m";;
-                -red) COLOUR="\033[31m";;
-                -green) COLOUR="\033[32m";;
-                -yellow) COLOUR="\033[33m";;
-                -blue) COLOUR="\033[34m";;
-                -purple) COLOUR="\033[35m";;
-                -cyan) COLOUR="\033[36m";;
-                -white) COLOUR="\033[37m";;
-                -a) HUANHANG=1 ;;
-                *) COLOUR="\033[37m";;
+                -black) COLOUR="\033[30m";
+                -red) COLOUR="\033[41;37m";
+                #-red) COLOUR="\033[31m";
+                -green) COLOUR="\033[32m";
+                -yellow) COLOUR="\033[33m";
+                -blue) COLOUR="\033[34m";
+                -purple) COLOUR="\033[35m";
+                -cyan) COLOUR="\033[36m";
+                -white) COLOUR="\033[37m";
+                -a) HUANHANG=1;
+                *) COLOUR="\033[37m";
             esac
         else
             WENZHI+="${PARSTR}"
         fi
     done
-    if [[ ${HUANHANG} -eq 1 ]];then
+    if [[ ${HUANHANG} -eq 1 ]]; then
         printf "${COLOUR}%b%s \033[0m" "${WENZHI}"
     else
         printf "${COLOUR}%b%s\033[0m\n" "${WENZHI}"

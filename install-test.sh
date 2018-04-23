@@ -136,7 +136,6 @@ fi
 
 CUR_DIR="$(dirname $(readlink -f $0))/"
 NGINX_INPATH="/usr/local/nginx"
-CPUSU=$(cat /proc/cpuinfo | grep processor | wc -l)
 #################################################################################################################################################
 
 if [[ "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" && "$(Check_OS)" != "redhat7" && "$(Check_OS)" != "redhat6" ]]; then
@@ -298,11 +297,10 @@ cd ${CUR_DIR}
 if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
     cp -rf 404.html ${NGINX_INPATH}/html/404.html
 fi
-if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
+if [[ ! -e ${NGINX_INPATH}/html/index.html ]]; then
     cp -rf index.html ${NGINX_INPATH}/html/index.html
 fi
-if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
-    sed -i "s/CPUSU/${CPUSU}/g" nginx.conf
+if [[ ! -e ${NGINX_INPATH}/conf/nginx.conf ]]; then
     cp -rf nginx.conf ${NGINX_INPATH}/conf/nginx.conf
 fi
 

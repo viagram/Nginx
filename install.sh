@@ -21,25 +21,14 @@ EOF
 echo -e "\033[0m"
 
 function Check_OS(){
-    if [[ -f /etc/redhat-release ]]; then
-        if egrep -i "centos.*6\..*" /etc/redhat-release >/dev/null 2>&1; then
-            echo 'centos6'
-        elif egrep -i "centos.*7\..*" /etc/redhat-release >/dev/null 2>&1; then
-            echo 'centos7'
-        elif egrep -i "Red.*Hat.*6\..*" /etc/redhat-release >/dev/null 2>&1; then
-            echo 'redhat6'
-        elif egrep -i "Red.*Hat.*7\..*" /etc/redhat-release >/dev/null 2>&1; then
-            echo 'redhat7'
-        fi
-    elif [[ -f /etc/issue ]]; then
-        if egrep -i "debian" /etc/issue >/dev/null 2>&1; then
-            echo 'debian'
-        elif egrep -i "ubuntu" /etc/issue >/dev/null 2>&1; then
-            echo 'ubuntu'
-        fi
-    else
-        echo 'unknown'
-    fi
+    Text=$(cat /etc/*-release)
+    if echo ${Text} | egrep -io "(centos[a-z ]*5|red[a-z ]*hat[a-z ]*5)" >/dev/null 2>&1; then echo centos5
+    elif echo ${Text} | egrep -io "(centos[a-z ]*6|red[a-z ]*hat[a-z ]*6)" >/dev/null 2>&1; then echo centos6
+    elif echo ${Text} | egrep -io "(centos[a-z ]*7|red[a-z ]*hat[a-z ]*7)" >/dev/null 2>&1; then echo centos7
+    elif echo ${Text} | egrep -io "Fedora[a-z ]*[0-9]{1,2}" >/dev/null 2>&1; then echo fedora
+    elif echo ${Text} | egrep -io "debian[a-z /]*[0-9]{1,2}" >/dev/null 2>&1; then echo debian
+    elif echo ${Text} | egrep -io "ubuntu" >/dev/null 2>&1; then echo ubuntu
+   fi
 }
 
 function printnew(){
@@ -120,9 +109,9 @@ function OptNET(){
 
 #改成北京时间
 function check_datetime(){
-    if [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
+    if [[ "$(Check_OS)" == "centos7" ]]; then
         timedatectl set-timezone Asia/Shanghai
-    elif [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
+    elif [[ "$(Check_OS)" == "centos6" ]]; then
         rm -rf /etc/localtime
         ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
     fi
@@ -139,7 +128,7 @@ CUR_DIR="$(dirname $(readlink -f $0))/"
 NGINX_INPATH="/usr/local/nginx"
 #################################################################################################################################################
 
-if [[ "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" && "$(Check_OS)" != "redhat7" && "$(Check_OS)" != "redhat6" ]]; then
+if [[ "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" ]]; then
     printnew -red "目前仅支持CentOS6-7及Redhat6-7系统."
     exit 1
 fi
@@ -295,20 +284,17 @@ rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
 
 printnew -green "安装和配置Nginx服务..."
 cd ${CUR_DIR}
-if [[ ! -e ${NGINX_INPATH}/html/404.html ]]; then
-    cp -rf 404.html ${NGINX_INPATH}/html/404.html
-fi
-if [[ ! -e ${NGINX_INPATH}/html/index.html ]]; then
-    cp -rf index.html ${NGINX_INPATH}/html/index.html
-fi
-if [[ ! -e ${NGINX_INPATH}/conf/nginx.conf ]]; then
+cp -rf 404.html ${NGINX_INPATH}/html/404.html
+cp -rf index.html ${NGINX_INPATH}/html/index.html
+if [[ ! -e ${NGINX_INPATH}/conf/frist.chk ]]; then
     cp -rf nginx.conf ${NGINX_INPATH}/conf/nginx.conf
+	echo yes>${NGINX_INPATH}/conf/frist.chk
 fi
 
-if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
+if [[ "$(Check_OS)" == "centos6" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx
     cp -rf nginx /etc/init.d/nginx
-    chmod 775 /etc/init.d/nginx >/dev/null 2>&1
+    chmod +x /etc/init.d/nginx >/dev/null 2>&1
     chkconfig --add nginx  >/dev/null 2>&1
     chkconfig nginx on >/dev/null 2>&1
     if ! service nginx status >/dev/null 2>&1; then
@@ -325,7 +311,7 @@ if [[ "$(Check_OS)" == "centos6" || "$(Check_OS)" == "redhat6" ]]; then
         fi
     fi
     
-elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "redhat7" ]]; then
+elif [[ "$(Check_OS)" == "centos7" ]]; then
     sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
     cp -rf nginx.service /usr/lib/systemd/system/nginx.service
     chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1

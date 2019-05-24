@@ -136,7 +136,9 @@ fi
 cd ${CUR_DIR}
 printnew -a -green "获取nginx信息..."
 #稳定版
-DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
+#DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
+#开发版
+DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 if [[ -z ${NAME} ]]; then
     printnew -r -red "获取nginx信息失败."

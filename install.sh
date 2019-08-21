@@ -140,12 +140,19 @@ printnew -a -green "获取nginx信息..."
 #开发版
 DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
+_new_ver=$(echo ${NAME} | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
+_old_ver=$(${NGINX_INPATH}/sbin/nginx -v 2>&1 | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
 if [[ -z ${NAME} ]]; then
     printnew -r -red "获取nginx信息失败."
     exit 1
 else
     printnew -r -green "成功."
 fi
+
+echo $_new_ver
+echo $_old_ver
+echo ${CUR_DIR}
+exit
 
 printnew -green "将进行 ${NAME} 安装."
 read -p "输入[y/n]选择是否继续, 默认为y：" is_go

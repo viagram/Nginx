@@ -164,7 +164,7 @@ fi
 
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
-yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel \
+yum install -y gcc gcc-c++ epel-release kernel-devel-$(uname -r) unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel \
     curl wget libtool libevent gettext-devel ntpdate
 
 printnew -green "下载libmaxminddb源码..."

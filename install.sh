@@ -25,6 +25,7 @@ function Check_OS(){
 	if echo ${Text} | egrep -io "(centos[a-z ]*5|red[a-z ]*hat[a-z ]*5)" >/dev/null 2>&1; then echo centos5
 	elif echo ${Text} | egrep -io "(centos[a-z ]*6|red[a-z ]*hat[a-z ]*6)" >/dev/null 2>&1; then echo centos6
 	elif echo ${Text} | egrep -io "(centos[a-z ]*7|red[a-z ]*hat[a-z ]*7)" >/dev/null 2>&1; then echo centos7
+	elif echo ${Text} | egrep -io "(centos[a-z ]*8|red[a-z ]*hat[a-z ]*8)" >/dev/null 2>&1; then echo centos8
 	elif echo ${Text} | egrep -io "Fedora[a-z ]*[0-9]{1,2}" >/dev/null 2>&1; then echo fedora
 	elif echo ${Text} | egrep -io "debian[a-z /]*[0-9]{1,2}" >/dev/null 2>&1; then echo debian
 	elif echo ${Text} | egrep -io "ubuntu" >/dev/null 2>&1; then echo ubuntu
@@ -109,13 +110,13 @@ function OptNET(){
 
 #改成北京时间
 function check_datetime(){
-	if [[ "$(Check_OS)" == "centos7" ]]; then
+	if [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "centos8" ]]; then
 		timedatectl set-timezone Asia/Shanghai
 	elif [[ "$(Check_OS)" == "centos6" ]]; then
 		rm -rf /etc/localtime
 		ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 	fi
-	ntpdate cn.pool.ntp.org >/dev/null 2>&1
+	ntpdate pool.ntp.org >/dev/null 2>&1
 }
 
 function version_gt() { test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1";} #大于
@@ -135,8 +136,8 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 
-if [[ "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" ]]; then
-	printnew -red "目前仅支持CentOS6-7及Redhat6-7系统."
+if [[ "$(Check_OS)" != "centos8" && "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" ]]; then
+	printnew -red "目前仅支持CentOS6-7-8及Redhat6-7-8系统."
 	cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR}
 	exit 1
 fi
@@ -323,7 +324,7 @@ if [[ "$(Check_OS)" == "centos6" ]]; then
 		fi
 	fi
 	
-elif [[ "$(Check_OS)" == "centos7" ]]; then
+elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "centos8" ]]; then
 	sed -i "s%NGINX_INPATH%${NGINX_INPATH}%g" nginx.service
 	cp -rf nginx.service /usr/lib/systemd/system/nginx.service
 	chmod 754 /usr/lib/systemd/system/nginx.service >/dev/null 2>&1

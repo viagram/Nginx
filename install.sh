@@ -155,8 +155,8 @@ _new_ver=$(echo ${NAME} | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
 [[ -x ${NGINX_INPATH}/sbin/nginx ]] && _old_ver=$(${NGINX_INPATH}/sbin/nginx -v 2>&1 | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
 printnew -green "最新版本: \033[33m${_new_ver}"
 if [[ -n ${_old_ver} ]]; then
+	printnew -green "已装版本: \033[33m${_old_ver}"
 	if version_ge ${_old_ver} ${_new_ver}; then
-		printnew -green "已装版本: \033[33m${_old_ver}"
 		printnew -red "检测到系统已安装更新版本的Nginx"
 		read -p "输入[y/n]选择是否继续覆盖安装, 默认为n：" is_go
 		[[ -z "${is_go}" ]] && is_go='n'

@@ -283,16 +283,17 @@ fi
 cd ..
 
 printnew -green "下载GeoLite2-Country.mmdb..."
-[[ -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz ]] && rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
-if ! wget -O ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz -c http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz --no-check-certificate; then
+GeoLite2_Name='GeoLite2-Country_20191224.tar.gz'
+[[ -f ${NGINX_INPATH}/${GeoLite2_Name} ]] && rm -f ${NGINX_INPATH}/${GeoLite2_Name}
+if ! wget -O ${NGINX_INPATH}/${GeoLite2_Name} -c https://dnsdian.com/${GeoLite2_Name} --no-check-certificate; then
 	printnew -red "下载GeoLite2-Country.mmdb失败."
 	exit 1
 fi
-if ! gunzip -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz; then
+if ! tar -zxf ${NGINX_INPATH}/${GeoLite2_Name} -C ${NGINX_INPATH}/; then
 	printnew -red "解压GeoLite2-Country.mmdb失败."
 	exit 1
 fi
-rm -f ${NGINX_INPATH}/GeoLite2-Country.mmdb.gz
+rm -f ${NGINX_INPATH}/${GeoLite2_Name}
 
 printnew -green "安装和配置Nginx服务..."
 cd ${CUR_DIR}

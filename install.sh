@@ -147,7 +147,9 @@ printnew -green "获取nginx信息..."
 #稳定版
 #DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Stable version</h4>[[:print:]]*<h4>Legacy versions</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
 #开发版
-DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
+#DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
+#自动选择最新版
+DOWN=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 http://nginx.org/en/download.html | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -rVu | head -n1)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 [[ -z ${NAME} ]] && printnew -red "获取nginx信息失败." && cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR} && exit 1
 

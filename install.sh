@@ -285,7 +285,7 @@ fi
 cd ..
 
 printnew -green "下载GeoLite2-Country.mmdb..."
-GeoLite2_Name='GeoLite2-Country_20191224.tar.gz'
+GeoLite2_Name='GeoLite2-Country.tar.gz'
 [[ -f ${NGINX_INPATH}/${GeoLite2_Name} ]] && rm -f ${NGINX_INPATH}/${GeoLite2_Name}
 if ! wget -O ${NGINX_INPATH}/${GeoLite2_Name} -c https://dnsdian.com/${GeoLite2_Name} --no-check-certificate; then
 	printnew -red "下载GeoLite2-Country.mmdb失败."

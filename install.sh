@@ -170,7 +170,11 @@ printnew -green "将进行 ${NAME} 安装."
 
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
-yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel ntpdate
+if [[ "$(Check_OS)" == "centos8" ]]; then
+	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel
+else
+	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel ntpdate
+fi
 
 printnew -green "下载libmaxminddb源码..."
 VERSION=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')

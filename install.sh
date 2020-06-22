@@ -29,7 +29,7 @@ function Check_OS(){
 	elif echo ${Text} | egrep -io "Fedora[a-z ]*[0-9]{1,2}" >/dev/null 2>&1; then echo fedora
 	elif echo ${Text} | egrep -io "debian[a-z /]*[0-9]{1,2}" >/dev/null 2>&1; then echo debian
 	elif echo ${Text} | egrep -io "ubuntu" >/dev/null 2>&1; then echo ubuntu
-   fi
+	fi
 }
 
 function printnew(){
@@ -171,7 +171,7 @@ printnew -green "将进行 ${NAME} 安装."
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
 if [[ "$(Check_OS)" == "centos8" ]]; then
-	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel
+	dnf install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel
 else
 	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel ntpdate
 fi

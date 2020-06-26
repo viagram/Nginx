@@ -5,6 +5,7 @@ After=network.target remote-fs.target nss-lookup.target
 [Service]
 Type=forking
 PIDFile=NGINX_INPATH/logs/nginx.pid
+ExecStartPre=NGINX_INPATH/sbin/nginx -t -q -c NGINX_INPATH/conf/nginx.conf
 ExecStart=NGINX_INPATH/sbin/nginx -c NGINX_INPATH/conf/nginx.conf
 ExecReload=NGINX_INPATH/sbin/nginx -s reload
 ExecStop=NGINX_INPATH/sbin/nginx -s stop

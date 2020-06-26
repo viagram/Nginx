@@ -305,7 +305,7 @@ printnew -green "安装和配置Nginx服务..."
 cd ${CUR_DIR}
 cp -rf 404.html ${NGINX_INPATH}/html/404.html
 cp -rf index.html ${NGINX_INPATH}/html/index.html
-sed -i 's/zip;/zip rpm ipk apk rar 7z tar gz;/g' ${NGINX_INPATH}/conf/mime.types
+sed -i 's/zip;/zip ipk apk tar gz tgz xz bz2;/g' ${NGINX_INPATH}/conf/mime.types
 if [[ ! -e ${NGINX_INPATH}/conf/frist.chk ]]; then
 	cp -rf nginx.conf ${NGINX_INPATH}/conf/nginx.conf
 	echo yes>${NGINX_INPATH}/conf/frist.chk

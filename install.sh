@@ -171,9 +171,9 @@ printnew -green "将进行 ${NAME} 安装."
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
 if [[ "$(Check_OS)" == "centos8" ]]; then
-	dnf install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel
+	dnf install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-dev libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel
 else
-	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel ntpdate
+	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-dev libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
 fi
 
 printnew -green "下载libmaxminddb源码..."
@@ -217,17 +217,29 @@ cd ${NAME}
 
 printnew -green "下载和克隆nginx组件源码..."
 #git clone https://github.com/yaoweibin/nginx_tcp_proxy_module.git
+[[ -d ngx_http_geoip2_module ]] && rm -rf ngx_http_geoip2_module
 if ! git clone https://github.com/leev/ngx_http_geoip2_module.git; then
 	printnew -red "克隆ngx_http_geoip2_module源码失败."
 	exit 1
 fi
+[[ -d ngx_http_google_filter_module ]] && rm -rf ngx_http_google_filter_module
 if ! git clone https://github.com/cuber/ngx_http_google_filter_module.git; then
 	printnew -red "克隆ngx_http_google_filter_module源码失败."
 	exit 1
 fi
+[[ -d ngx_http_substitutions_filter_module ]] && rm -rf ngx_http_substitutions_filter_module
 if ! git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git; then
 	printnew -red "克隆ngx_http_substitutions_filter_module源码失败."
 	exit 1
+fi
+[[ -d ngx_brotli ]] && rm -rf ngx_brotli
+if ! git clone https://github.com/google/ngx_brotli.git; then
+	printnew -red "克隆ngx_brotli源码失败."
+	exit 1
+else
+	cd ngx_brotli
+	git submodule update --init
+	cd ..
 fi
 PCRE_URL=$(curl -sk --retry 3 --speed-time 10 --speed-limit 1 --connect-timeout 10 https://ftp.pcre.org/pub/pcre/ | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}.tar.gz' | sort -Vu | awk 'END{print "https://ftp.pcre.org/pub/pcre/"$0}')
 PCRE_NAME=$(echo ${PCRE_URL} | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}')
@@ -262,22 +274,41 @@ fi
 
 printnew -green "编译和安装Nginx..."
 ./configure \
-	--with-stream \
-	--with-stream_ssl_module \
-	--with-http_v2_module \
-	--with-http_sub_module \
-	--with-http_ssl_module \
-	--with-http_sub_module \
-	--with-http_realip_module \
-	--with-http_gzip_static_module \
-	--with-http_stub_status_module  \
+	--prefix=${NGINX_INPATH} \
 	--with-pcre=${PCRE_NAME} \
 	--with-zlib=${ZLIB_NAME} \
 	--with-openssl=${OPENSSL_NAME} \
+	--add-module=ngx_brotli \
 	--add-module=ngx_http_geoip2_module \
 	--add-module=ngx_http_google_filter_module \
 	--add-module=ngx_http_substitutions_filter_module \
-	--prefix=${NGINX_INPATH}
+	--with-file-aio \
+	--with-stream \
+	--with-stream_ssl_module \
+	--with-stream_ssl_preread_module \
+	--with-http_v2_module \
+	--with-http_sub_module \
+	--with-http_ssl_module \
+	--with-http_realip_module \
+	--with-http_gzip_static_module \
+	--with-http_stub_status_module \
+	--with-http_addition_module \
+	--with-http_xslt_module=dynamic \
+	--with-http_image_filter_module=dynamic \
+	--with-http_dav_module \
+	--with-http_flv_module \
+	--with-http_mp4_module \
+	--with-http_gunzip_module \
+	--with-http_random_index_module \
+	--with-http_secure_link_module \
+	--with-http_degradation_module \
+	--with-http_slice_module \
+	--with-http_perl_module=dynamic \
+	--with-http_auth_request_module \
+	--with-mail=dynamic \
+	--with-mail_ssl_module \
+	--with-google_perftools_module
+
 if ! make; then
 	printnew -red "编译失败."
 	exit 1

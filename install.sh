@@ -154,6 +154,7 @@ NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 [[ -z ${NAME} ]] && printnew -red "获取nginx信息失败." && cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR} && exit 1
 
 _new_ver=$(echo ${NAME} | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
+[[ ! -x ${NGINX_INPATH}/sbin/nginx ]] && chmod +x ${NGINX_INPATH}/sbin/nginx
 [[ -x ${NGINX_INPATH}/sbin/nginx ]] && _old_ver=$(${NGINX_INPATH}/sbin/nginx -v 2>&1 | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
 printnew -green "最新版本: \033[33m${_new_ver}"
 if [[ -n ${_old_ver} ]]; then

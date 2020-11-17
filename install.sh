@@ -319,6 +319,7 @@ if ! make install; then
 	exit 1
 fi
 cd ..
+ln -f /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 
 printnew -green "下载GeoLite2-Country.mmdb..."
 GeoLite2_Name='GeoLite2-Country.tar.gz'

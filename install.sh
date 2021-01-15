@@ -174,7 +174,7 @@ yum groupinstall -y "Development Tools"
 if [[ "$(Check_OS)" == "centos8" ]]; then
 	dnf install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-dev libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel
 else
-	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-dev libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
+	yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
 fi
 
 printnew -green "下载libmaxminddb源码..."

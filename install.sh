@@ -288,6 +288,7 @@ printnew -green "编译和安装Nginx..."
 	--with-stream_ssl_module \
 	--with-stream_ssl_preread_module \
 	--with-http_v2_module \
+        --with-http_v3_module \
 	--with-http_sub_module \
 	--with-http_ssl_module \
 	--with-http_realip_module \

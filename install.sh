@@ -120,6 +120,18 @@ function check_datetime(){
     ntpdate pool.ntp.org >/dev/null 2>&1
 }
 
+function install_cmake(){
+    printnew -green "安装CMake..."
+    which cmake >/dev/null 2>&1 && yum remove -y cmake
+    cmake_ver_1=$(curl -#kL https://cmake.org/files/ | egrep -io 'v[0-9]{1,2}\.[0-9]{1,2}' | sort -ruV | head -n1)
+    cmake_ver_2=$(curl -#kL https://cmake.org/files/${cmake_ver_1}/ | egrep -io 'cmake-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}(|-rc5)-linux-x86_64.sh' | sort -ruV | head -n1)
+    cmake_down_url="https://cmake.org/files/${cmake_ver_1}/${cmake_ver_2}"
+    curl -#kL "${cmake_down_url}" -o "${cmake_ver_2}"
+    bash "${cmake_ver_2}" --prefix=/usr/ --exclude-subdir
+    rm -f "${cmake_ver_2}"
+    source /etc/profile
+}
+
 function version_gt() { test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" != "$1";} #大于
 function version_ge() { test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" == "$1";} #大于或等于
 function version_lt() { test "$(echo "$@" | tr " " "\n" | sort -rV | head -n 1)" != "$1";} #小于
@@ -173,9 +185,11 @@ printnew -green "将进行 ${NAME} 安装."
 printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
 if [[ "$(Check_OS)" == "centos8" || "$(Check_OS)" == "rockylinux8" ]]; then
-    dnf install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-devel libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel
+    dnf install -y epel-release
+    dnf install -y git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-devel libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel
 else
-    yum install -y gcc gcc-c++ epel-release kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
+    yum install -y epel-release
+    yum install -y git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
 fi
 
 printnew -green "下载libmaxminddb源码..."
@@ -238,11 +252,10 @@ fi
 if ! git clone https://github.com/google/ngx_brotli.git; then
     printnew -red "克隆ngx_brotli源码失败."
     exit 1
-else
-    cd ngx_brotli
-    git submodule update --init
-    cd ..
 fi
+cd ngx_brotli
+git submodule update --init
+cd ..
 PCRE_URL=$(curl -sk https://ftp.pcre.org/pub/pcre/ | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}.tar.gz' | sort -Vu | awk 'END{print "https://ftp.pcre.org/pub/pcre/"$0}')
 PCRE_NAME=$(echo ${PCRE_URL} | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}')
 if ! wget -O ${PCRE_NAME}.tar.gz -c ${PCRE_URL} --no-check-certificate; then

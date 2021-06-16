@@ -14,4 +14,8 @@
 
     curl -skL https://codeload.github.com/viagram/Nginx/tar.gz/master | tar -zxv && sh Nginx-master/install.sh
 
+安装quic版:
+
+    curl -skL https://github.com/viagram/Nginx/raw/master/install_quic.sh | bash
+
 按提示操作, 基本按几下回车键即可.

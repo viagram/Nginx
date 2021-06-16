@@ -146,10 +146,12 @@ doNet
     libmaxminddb_ver=$(echo ${libmaxminddb_name} | egrep -io '([0-9\.]{1,3}){2}[0-9]{1,3}')
     if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_ver}/${libmaxminddb_name} -O ${libmaxminddb_name} --no-check-certificate; then
         printnew -red "下载${libmaxminddb_name}失败."
+        rm -rf libmaxminddb*
         exit 1
     fi
     if ! tar zxf ${libmaxminddb_name}; then
         printnew -red "解压${libmaxminddb_name}失败."
+        rm -rf libmaxminddb*
         exit 1
     fi
     printnew -green "编译和安装libmaxminddb..."
@@ -157,10 +159,12 @@ doNet
     ./configure
     if ! make -j5; then
         printnew -red "编译失败."
+        rm -rf libmaxminddb*
         exit 1
     fi
     if ! make install; then
         printnew -red "安装失败."
+        rm -rf libmaxminddb*
         exit 1
     fi
     if ! egrep -i "/usr/local/lib" /etc/ld.so.conf.d/local.conf >/dev/null 2>&1; then

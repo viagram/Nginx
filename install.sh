@@ -198,10 +198,12 @@ printnew -green "下载libmaxminddb源码..."
 VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')
 if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
+    rm -rf libmaxminddb*
     exit 1
 fi
 if ! tar zxf libmaxminddb-${VERSION}.tar.gz; then
     printnew -red "解压libmaxminddb-${VERSION}失败."
+    rm -rf libmaxminddb*
     exit 1
 fi
 printnew -green "编译和安装libmaxminddb..."
@@ -209,10 +211,12 @@ cd libmaxminddb-${VERSION}
 ./configure
 if ! make; then
     printnew -red "编译失败."
+    rm -rf libmaxminddb*
     exit 1
 fi
 if ! make install; then
     printnew -red "安装失败."
+    rm -rf libmaxminddb*
     exit 1
 fi
 if ! egrep -i "/usr/local/lib" /etc/ld.so.conf.d/local.conf >/dev/null 2>&1; then

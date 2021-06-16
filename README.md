@@ -12,6 +12,6 @@
 
 安装方法2:
 
-    curl -skL https://codeload.github.com/viagram/Nginx/zip/master -o Nginx-master.zip && unzip Nginx-master.zip && rm -f Nginx-master.zip && sh Nginx-master/install.sh
+    curl -skL https://codeload.github.com/viagram/Nginx/tar.gz/master | tar -zxv && sh Nginx-master/install.sh
 
 按提示操作, 基本按几下回车键即可.

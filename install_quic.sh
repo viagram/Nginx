@@ -170,10 +170,12 @@ doNet
     rm -rf libmaxminddb*
 }
 
-[[ ! -x /usr/local/nginx/sbin/nginx ]] && {
+! which nginx >/dev/null 2>&1 && {
     curl -skL https://codeload.github.com/viagram/Nginx/tar.gz/master | tar -zxv && sh Nginx-master/install.sh
 }
-mv /usr/local/nginx/sbin/nginx /usr/local/nginx/sbin/nginx_old
-curl -skL https://dnsdian.com/nginx.tgz | tar -zxvC /usr/local/nginx/sbin/ && chmod +x /usr/local/nginx/sbin/nginx || curl -skL https://dnsdian.com/nginx.tgz | tar -zxvC /usr/local/nginx/sbin/ && chmod +x /usr/local/nginx/sbin/nginx
+nginx_file=$(cat /usr/lib/systemd/system/nginx.service | egrep -i 'ExecStart=' | awk '{print $1}' | cut -d= -f 2)
+nginx_path=$(echo ${nginx_file} | sed 's/nginx$//g')
+mv -f ${nginx_file} ${nginx_file}_old
+curl -skL https://dnsdian.com/nginx.tgz | tar -zxvC ${nginx_path} && chmod +x ${nginx_file} || curl -skL https://dnsdian.com/nginx.tgz | tar -zxvC ${nginx_path} && chmod +x ${nginx_file}
 systemctl restart nginx
 ####################################### THE CODE END ##################################################

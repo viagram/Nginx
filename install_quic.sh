@@ -140,6 +140,7 @@ check_datetime
 doNet
 
 [[ ! -f /usr/local/lib/libmaxminddb.so ]] && {
+    yum install gcc gcc-c++ make
     printnew -green "下载libmaxminddb源码..."
     libmaxminddb_name=$(curl -skL https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io 'libmaxminddb-([0-9\.]{1,3}){2,}.tar.gz' | sort -u)
     libmaxminddb_ver=$(echo ${libmaxminddb_name} | egrep -io '([0-9\.]{1,3}){2}[0-9]{1,3}')

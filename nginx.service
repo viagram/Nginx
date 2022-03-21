@@ -5,11 +5,10 @@ Wants=network-online.target
 
 [Service]
 Type=forking
-PIDFile=/run/nginx.pid
-ExecStartPre=/usr/bin/rm -f /run/nginx.pid
 ExecStartPre=NGINX_INPATH/sbin/nginx -t -c NGINX_INPATH/conf/nginx.conf
 ExecStart=NGINX_INPATH/sbin/nginx -c NGINX_INPATH/conf/nginx.conf
 ExecReload=NGINX_INPATH/sbin/nginx -s reload
+ExecStop=NGINX_INPATH/sbin/nginx -s stop
 KillSignal=SIGQUIT
 TimeoutStopSec=5
 KillMode=process

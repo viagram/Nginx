@@ -256,7 +256,7 @@ fi
 cd ngx_brotli
 git submodule update --init
 cd ..
-PCRE_URL=$(curl -sk https://ftp.pcre.org/pub/pcre/ | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}.tar.gz' | sort -Vu | awk 'END{print "https://ftp.pcre.org/pub/pcre/"$0}')
+PCRE_URL='https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download'
 PCRE_NAME=$(echo ${PCRE_URL} | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}')
 if ! wget -O ${PCRE_NAME}.tar.gz -c ${PCRE_URL} --no-check-certificate; then
     printnew -red "下载pcre源码失败."

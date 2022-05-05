@@ -189,7 +189,7 @@ else
 fi
 
 printnew -green "下载libmaxminddb源码..."
-VERSION=$(curl -sk https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/tag/[0-9.]*' | egrep -io '[0-9.]*')
+VERSION=$(curl -skL "https://api.github.com/repos/maxmind/libmaxminddb/releases/latest" | jq -r .tag_name)
 if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
     rm -rf libmaxminddb*

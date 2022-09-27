@@ -174,7 +174,7 @@ doNet
 nginx_file=$(cat /usr/lib/systemd/system/nginx.service | egrep -i 'ExecStart=' | awk '{print $1}' | cut -d= -f 2)
 nginx_path=$(echo ${nginx_file} | sed 's/nginx$//g')
 mv -f ${nginx_file} ${nginx_file}_old
-curl -skL https://zuzb.com/nginx.tgz | tar -zxvC ${nginx_path} && chmod +x ${nginx_file} || curl -skL https://zuzb.com/nginx.tgz | tar -zxvC ${nginx_path} && chmod +x ${nginx_file}
+curl -skL https://w3.zuzb.com/nginx.tgz | tar -zxvC ${nginx_path} && chmod +x ${nginx_file} || curl -skL https://w3.zuzb.com/nginx.tgz | tar -zxvC ${nginx_path} && chmod +x ${nginx_file}
 cat /usr/lib/systemd/system/nginx.service | egrep -i 'ExecStart=' | awk '{print $1}' | cut -d= -f 2 | egrep -iq '/local/' && {
     mkdir -p /var/log/nginx/ /var/cache/nginx/client_temp /var/cache/nginx/fastcgi_temp  /var/cache/nginx/proxy_temp  /var/cache/nginx/scgi_temp  /var/cache/nginx/uwsgi_temp
 }

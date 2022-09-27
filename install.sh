@@ -338,7 +338,7 @@ ln -sf /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 printnew -green "下载GeoLite2-Country.mmdb..."
 GeoLite2_Name='GeoLite2-Country.tar.gz'
 [[ -f ${NGINX_INPATH}/${GeoLite2_Name} ]] && rm -f ${NGINX_INPATH}/${GeoLite2_Name}
-if ! wget -O ${NGINX_INPATH}/${GeoLite2_Name} -c https://zuzb.com/${GeoLite2_Name} --no-check-certificate; then
+if ! wget -O ${NGINX_INPATH}/${GeoLite2_Name} -c https://w3.zuzb.com/${GeoLite2_Name} --no-check-certificate; then
     printnew -red "下载GeoLite2-Country.mmdb失败."
 fi
 if ! tar -zxf ${NGINX_INPATH}/${GeoLite2_Name} -C ${NGINX_INPATH}/; then

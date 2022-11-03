@@ -22,17 +22,17 @@ echo -e "\033[0m"
 
 function Check_OS(){
     Text=$(cat /etc/*-release)
-    if echo ${Text} | egrep -io "(centos[a-z ]*5|red[a-z ]*hat[a-z ]*5)" >/dev/null 2>&1; then echo centos5
-    elif echo ${Text} | egrep -io "(centos[a-z ]*6|red[a-z ]*hat[a-z ]*6)" >/dev/null 2>&1; then echo centos6
-    elif echo ${Text} | egrep -io "(centos[a-z ]*7|red[a-z ]*hat[a-z ]*7)" >/dev/null 2>&1; then echo centos7
-    elif echo ${Text} | egrep -io "(centos[a-z ]*8|red[a-z ]*hat[a-z ]*8)" >/dev/null 2>&1; then echo centos8
-    elif echo ${Text} | egrep -io "(Rocky[a-z ]*8|red[a-z ]*hat[a-z ]*8)" >/dev/null 2>&1; then echo rockylinux8
-    elif echo ${Text} | egrep -io "Fedora[a-z ]*[0-9]{1,2}" >/dev/null 2>&1; then echo fedora
-    elif echo ${Text} | egrep -io "debian[a-z /]*[0-9]{1,2}" >/dev/null 2>&1; then echo debian
-    elif echo ${Text} | egrep -io "ubuntu" >/dev/null 2>&1; then echo ubuntu
-   fi
+    echo "${Text}" | egrep -iq "(centos[a-z ]*5|red[a-z ]*hat[a-z ]*5)" && echo centos5 && return
+    echo "${Text}" | egrep -iq "(centos[a-z ]*6|red[a-z ]*hat[a-z ]*6)" && echo centos6 && return
+    echo "${Text}" | egrep -iq "(centos[a-z ]*7|red[a-z ]*hat[a-z ]*7)" && echo centos7 && return
+    echo "${Text}" | egrep -iq "(centos[a-z ]*8|red[a-z ]*hat[a-z ]*8)" && echo centos8 && return
+    echo "${Text}" | egrep -iq "Rocky Linux release [0-9]{1,2}\.[0-9]{1,2}" && echo rockylinux && return
+    echo "${Text}" | egrep -iq "debian[a-z /]*[0-9]{1,2}" && echo debian && return
+    echo "${Text}" | egrep -iq "Fedora[a-z ]*[0-9]{1,2}" && echo fedora && return
+    echo "${Text}" | egrep -iq "OpenWRT[a-z ]*" && echo openwrt && return
+    echo "${Text}" | egrep -iq "ubuntu[[:space:]]*20\." && echo ubuntu20 && return
+    echo "${Text}" | egrep -iq "ubuntu" && echo ubuntu && return
 }
-
 
 function printnew(){
     typeset -l CHK
@@ -106,7 +106,7 @@ function doNet(){
 
 #改成北京时间
 function check_datetime(){
-    if [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "centos8" || "$(Check_OS)" == "rockylinux8" ]]; then
+    if [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "centos8" || "$(Check_OS)" == "rockylinux" ]]; then
         timedatectl set-timezone Asia/Shanghai
     elif [[ "$(Check_OS)" == "centos6" ]]; then
         rm -rf /etc/localtime
@@ -123,7 +123,7 @@ if [[ ${EUID} -ne 0 ]]; then
     exit 1
 fi
 
-if [[ "$(Check_OS)" != "rockylinux8" && "$(Check_OS)" != "centos8" && "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" ]]; then
+if [[ "$(Check_OS)" != "rockylinux" && "$(Check_OS)" != "centos8" && "$(Check_OS)" != "centos7" && "$(Check_OS)" != "centos6" ]]; then
     printnew -red "目前仅支持CentOS6-7-8及Redhat6-7-8系统."
     cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR}
     exit 1

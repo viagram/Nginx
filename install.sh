@@ -402,6 +402,7 @@ pm.max_children = 5
 pm.start_servers = 2
 pm.min_spare_servers = 1
 pm.max_spare_servers = 3
+pm.max_requests = 100
 EOF
     systemctl restart php-fpm
 }

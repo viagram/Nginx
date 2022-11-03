@@ -157,7 +157,7 @@ printnew -green "获取nginx信息..."
 #开发版
 #DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '<h4>Mainline version</h4>[[:print:]]*<h4>Stable version</h4>' | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -Vu)
 #自动选择最新版
-DOWN=$(curl -sk http://nginx.org/en/download.html | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -rVu | head -n1)
+DOWN=$(curl -4sk http://nginx.org/en/download.html | egrep -io '/download/nginx-([0-9]{1,2}.){1,3}tar.gz' | sort -rVu | head -n1)
 NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 [[ -z ${NAME} ]] && printnew -red "获取nginx信息失败." && cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR} && exit 1
 
@@ -181,15 +181,15 @@ printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
 if [[ "$(Check_OS)" == "centos8" || "$(Check_OS)" == "rockylinux" ]]; then
     dnf install -y epel-release
-    dnf install -y jq git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-devel libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel
+    dnf install -y jq git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-devel libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel perl perl-devel
 else
     yum install -y epel-release
     yum install -y jq git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
 fi
 
 printnew -green "下载libmaxminddb源码..."
-VERSION=$(curl -skL "https://api.github.com/repos/maxmind/libmaxminddb/releases/latest" | jq -r .tag_name)
-if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -O libmaxminddb-${VERSION}.tar.gz --no-check-certificate; then
+VERSION=$(curl -kL "https://api.github.com/repos/maxmind/libmaxminddb/releases/latest" | jq -r .tag_name)
+if ! curl -4skL https://github.com/maxmind/libmaxminddb/releases/download/${VERSION}/libmaxminddb-${VERSION}.tar.gz -o libmaxminddb-${VERSION}.tar.gz; then
     printnew -red "下载libmaxminddb-${VERSION}失败."
     rm -rf libmaxminddb*
     exit 1
@@ -219,7 +219,7 @@ ldconfig >/dev/null 2>&1
 cd ..
 
 printnew -green "下载nginx源码..."
-if ! wget -O ${NAME}.tar.gz -c http://nginx.org${DOWN} --no-check-certificate; then
+if ! curl -4kLo ${NAME}.tar.gz http://nginx.org${DOWN}; then
     printnew -red "下载nginx源码失败."
     exit 1
 fi
@@ -237,11 +237,6 @@ if ! git clone https://github.com/leev/ngx_http_geoip2_module.git; then
     printnew -red "克隆ngx_http_geoip2_module源码失败."
     exit 1
 fi
-[[ -d ngx_http_google_filter_module ]] && rm -rf ngx_http_google_filter_module
-if ! git clone https://github.com/cuber/ngx_http_google_filter_module.git; then
-    printnew -red "克隆ngx_http_google_filter_module源码失败."
-    exit 1
-fi
 [[ -d ngx_http_substitutions_filter_module ]] && rm -rf ngx_http_substitutions_filter_module
 if ! git clone https://github.com/yaoweibin/ngx_http_substitutions_filter_module.git; then
     printnew -red "克隆ngx_http_substitutions_filter_module源码失败."
@@ -257,7 +252,7 @@ git submodule update --init
 cd ..
 PCRE_URL='https://sourceforge.net/projects/pcre/files/pcre/8.45/pcre-8.45.tar.gz/download'
 PCRE_NAME=$(echo ${PCRE_URL} | egrep -io 'pcre-[0-9]{1,2}.[0-9]{1,2}')
-if ! wget -O ${PCRE_NAME}.tar.gz -c ${PCRE_URL} --no-check-certificate; then
+if ! curl -4kLo ${PCRE_NAME}.tar.gz ${PCRE_URL}; then
     printnew -red "下载pcre源码失败."
     exit 1
 fi
@@ -267,7 +262,7 @@ if ! tar zxf ${PCRE_NAME}.tar.gz; then
 fi
 OPENSSL_URL=$(curl -sk https://www.openssl.org/source/ | egrep -io 'openssl-[0-9.]*[a-z]{1}.tar.gz' | sort -rVu | awk 'END{print "https://www.openssl.org/source/"$0}')
 OPENSSL_NAME=$(echo ${OPENSSL_URL} | egrep -io 'openssl-[0-9.]*[a-z]{1}')
-if ! wget -O ${OPENSSL_NAME}.tar.gz -c ${OPENSSL_URL} --no-check-certificate; then
+if ! curl -4kLo ${OPENSSL_NAME}.tar.gz ${OPENSSL_URL}; then
     printnew -red "下载openssl源码失败."
     exit 1
 fi
@@ -277,7 +272,7 @@ if ! tar zxf ${OPENSSL_NAME}.tar.gz; then
 fi
 ZLIB_URL=$(curl -sk https://zlib.net/ | egrep -io 'zlib-([0-9]{1,2}.){3}tar.gz' | sort -Vu | awk '{print "https://zlib.net/"$0}')
 ZLIB_NAME=$(echo ${ZLIB_URL} | egrep -io 'zlib-[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
-if ! wget -O ${ZLIB_NAME}.tar.gz -c ${ZLIB_URL} --no-check-certificate; then
+if ! curl -4kLo ${ZLIB_NAME}.tar.gz ${ZLIB_URL}; then
     printnew -red "下载zlib源码失败."
     exit 1
 fi
@@ -294,7 +289,6 @@ printnew -green "编译和安装Nginx..."
     --with-openssl=${OPENSSL_NAME} \
     --add-module=ngx_brotli \
     --add-module=ngx_http_geoip2_module \
-    --add-module=ngx_http_google_filter_module \
     --add-module=ngx_http_substitutions_filter_module \
     --with-file-aio \
     --with-stream \
@@ -337,7 +331,7 @@ ln -sf /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 printnew -green "下载GeoLite2-Country.mmdb..."
 GeoLite2_Name='GeoLite2-Country.tar.gz'
 [[ -f ${NGINX_INPATH}/${GeoLite2_Name} ]] && rm -f ${NGINX_INPATH}/${GeoLite2_Name}
-if ! wget -O ${NGINX_INPATH}/${GeoLite2_Name} -c https://w3.zuzb.com/${GeoLite2_Name} --no-check-certificate; then
+if ! curl -4kLo ${NGINX_INPATH}/${GeoLite2_Name} https://w3.zuzb.com/${GeoLite2_Name}; then
     printnew -red "下载GeoLite2-Country.mmdb失败."
 fi
 if ! tar -zxf ${NGINX_INPATH}/${GeoLite2_Name} -C ${NGINX_INPATH}/; then

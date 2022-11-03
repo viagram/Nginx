@@ -181,7 +181,7 @@ printnew -green "安装基础依懒软件包..."
 yum groupinstall -y "Development Tools"
 if [[ "$(Check_OS)" == "centos8" || "$(Check_OS)" == "rockylinux" ]]; then
     dnf install -y epel-release
-    dnf install -y jq git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-devel libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel perl perl-devel
+    dnf install -y jq git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxml2-devel libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel perl perl-devel php
 else
     yum install -y epel-release
     yum install -y jq git mercurial gcc gcc-c++ kernel-devel unzip automake make zlib-devel openssl openssl-devel pcre-devel pam-devel curl wget libtool libevent gettext-devel libxml2 libxslt-devel gd-devel perl-devel perl-ExtUtils-Embed google-perftools-devel ntpdate
@@ -389,5 +389,21 @@ elif [[ "$(Check_OS)" == "centos7" || "$(Check_OS)" == "centos8" || "$(Check_OS)
         fi
     fi
 fi
+
+[[ -f /etc/php-fpm.d/www.conf ]] && {
+    mv /etc/php-fpm.d/www.conf /etc/php-fpm.d/www.conf.bak
+    cat >/etc/php-fpm.d/www.conf<<'EOF'
+[www]
+user = nobody
+group = nobody
+listen = 127.0.0.1:9000
+pm = dynamic
+pm.max_children = 5
+pm.start_servers = 2
+pm.min_spare_servers = 1
+pm.max_spare_servers = 3
+EOF
+    systemctl restart php-fpm
+}
 
 cd ${CUR_DIR}/.. && rm -rf ${CUR_DIR}

@@ -404,6 +404,8 @@ pm.min_spare_servers = 1
 pm.max_spare_servers = 3
 pm.max_requests = 100
 EOF
+    [[ -f /etc/php.ini ]] && mv /etc/php.ini /etc/php.ini_bak
+    curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36" -#4kLo /etc/php.ini https://raw.githubusercontent.com/viagram/PHP_Install/master/php.ini
     systemctl restart php-fpm
 }
 

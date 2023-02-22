@@ -135,7 +135,7 @@ doNet
 [[ ! -f /usr/local/lib/libmaxminddb.so ]] && {
     yum install -y gcc gcc-c++ make gperftools-libs
     printnew -green "下载libmaxminddb源码..."
-    libmaxminddb_name=$(curl -skL https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io 'libmaxminddb-([0-9\.]{1,3}){2,}.tar.gz' | sort -u)
+    libmaxminddb_name=$(curl -skL https://github.com/maxmind/libmaxminddb/releases/latest | egrep -io '/releases/tag/([0-9\.]{1,3}){2,}' | egrep -io '([0-9\.]{1,3}){2,}' | sort -ruV | awk '{print "libmaxminddb-"$0".tar.gz"}')
     libmaxminddb_ver=$(echo ${libmaxminddb_name} | egrep -io '([0-9\.]{1,3}){2}[0-9]{1,3}')
     if ! wget -c https://github.com/maxmind/libmaxminddb/releases/download/${libmaxminddb_ver}/${libmaxminddb_name} -O ${libmaxminddb_name} --no-check-certificate; then
         printnew -red "下载${libmaxminddb_name}失败."

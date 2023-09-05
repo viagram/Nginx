@@ -402,10 +402,10 @@ pm.max_children = 5
 pm.start_servers = 2
 pm.min_spare_servers = 1
 pm.max_spare_servers = 3
-pm.max_requests = 100
+pm.max_requests = 300
 EOF
     [[ -f /etc/php.ini ]] && mv /etc/php.ini /etc/php.ini_bak
-    curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36" -#4kLo /etc/php.ini https://raw.githubusercontent.com/viagram/PHP_Install/master/php.ini
+    curl -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36" -#4kLo /etc/php.ini https://raw.githubusercontent.com/viagram/PHP_Install/master/php.ini
     extension_dir=$(dirname $(find / -name mbstring.so))/
     sed -i "s#This_php_extension_dir#${extension_dir}#g" /etc/php.ini
     systemctl restart php-fpm

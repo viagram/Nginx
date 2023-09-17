@@ -134,7 +134,7 @@ function version_le() { test "$(echo "$@" | tr " " "\n" | sort -V | head -n 1)" 
 
 #################################################################################################################################################
 
-CUR_DIR="$(dirname $(readlink -f $0))"
+CUR_DIR="$(dirname $(readlink -f $0))/nginx"
 NGINX_INPATH="/usr/local/nginx"
 
 # Check If You Are Root
@@ -150,6 +150,8 @@ if [[ "$(Check_OS)" != "rockylinux" && "$(Check_OS)" != "centos8" && "$(Check_OS
     exit 1
 fi
 
+[[ -d ${CUR_DIR} ]] && rm -rf ${CUR_DIR}
+mkdir -p ${CUR_DIR}
 cd ${CUR_DIR}
 printnew -green "获取nginx信息..."
 #稳定版
@@ -270,8 +272,8 @@ if ! tar zxf ${OPENSSL_NAME}.tar.gz; then
     printnew -red "解压openssl源码失败."
     exit 1
 fi
-ZLIB_URL=$(curl -sk https://zlib.net/ | egrep -io 'zlib-([0-9]{1,2}.){3}tar.gz' | sort -Vu | awk '{print "https://zlib.net/"$0}')
-ZLIB_NAME=$(echo ${ZLIB_URL} | egrep -io 'zlib-[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
+ZLIB_URL=$(curl -sk https://zlib.net/ | egrep -io 'zlib-([0-9]{1,2}.){2,3}tar.gz' | sort -Vu | awk '{print "https://zlib.net/"$0}')
+ZLIB_NAME=$(echo ${ZLIB_URL} | egrep -io 'zlib-([0-9]{1,2}.){2,3}' | sed 's/.$//g')
 if ! curl -4kLo ${ZLIB_NAME}.tar.gz ${ZLIB_URL}; then
     printnew -red "下载zlib源码失败."
     exit 1

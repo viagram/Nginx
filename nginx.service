@@ -1,0 +1,18 @@
+[Unit]
+Description=The nginx HTTP and reverse proxy server
+After=network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
+
+[Service]
+Type=forking
+ExecStartPre=NGINX_INPATH/sbin/nginx -t -c NGINX_INPATH/conf/nginx.conf
+ExecStart=NGINX_INPATH/sbin/nginx -c NGINX_INPATH/conf/nginx.conf
+ExecReload=NGINX_INPATH/sbin/nginx -s reload
+ExecStop=NGINX_INPATH/sbin/nginx -s stop
+KillSignal=SIGQUIT
+TimeoutStopSec=5
+KillMode=process
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

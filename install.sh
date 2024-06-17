@@ -372,17 +372,17 @@ cp -rf 404.html ${NGINX_INPATH}/html/404.html
 cp -rf index.html ${NGINX_INPATH}/html/index.html
 sed -i 's/zip;/zip ipk apk tar gz tgz xz bz2;/g' ${NGINX_INPATH}/conf/mime.types
 
-sed -i 's/nginx/warp3/g' ${NGINX_INPATH}/conf/fastcgi.conf
-sed -i 's/nginx/warp3/g' ${NGINX_INPATH}/conf/fastcgi_params
+sed -i 's/nginx\//warp3\//g' ${NGINX_INPATH}/conf/fastcgi.conf
+sed -i 's/nginx\//warp3\//g' ${NGINX_INPATH}/conf/fastcgi_params
 ! egrep -iq 'fastcgi_param  HTTP_HOST' ${NGINX_INPATH}/conf/fastcgi.conf && {
 	# 在第24行前插入模块
-	sed -i '24i\fastcgi_param  HTTP_HOST          $host;'   ${NGINX_INPATH}/conf/fastcgi.conf
+	sed -i '24i\fastcgi_param  HTTP_HOST             $host;'   ${NGINX_INPATH}/conf/fastcgi.conf
 	sed -i '/SERVER_NAME/d' ${NGINX_INPATH}/conf/fastcgi.conf
 	sed -i '24i\fastcgi_param  SERVER_NAME        $host;'  ${NGINX_INPATH}/conf/fastcgi.conf
 }
 ! egrep -iq 'fastcgi_param  HTTP_HOST' ${NGINX_INPATH}/conf/fastcgi_params && {
 	# 在第24行前插入模块
-	sed -i '24i\fastcgi_param  HTTP_HOST          $host;'  ${NGINX_INPATH}/conf/fastcgi_params
+	sed -i '24i\fastcgi_param  HTTP_HOST             $host;'  ${NGINX_INPATH}/conf/fastcgi_params
 	sed -i '/SERVER_NAME/d' ${NGINX_INPATH}/conf/fastcgi.conf
 	sed -i '24i\fastcgi_param  SERVER_NAME        $host;'  ${NGINX_INPATH}/conf/fastcgi_params
 }

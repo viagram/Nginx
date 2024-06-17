@@ -166,7 +166,7 @@ NAME=$(echo ${DOWN} | egrep -io 'nginx-[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}')
 
 _new_ver=$(echo ${NAME} | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
 [[ -f ${NGINX_INPATH}/sbin/nginx ]] && chmod +x ${NGINX_INPATH}/sbin/nginx
-[[ -x ${NGINX_INPATH}/sbin/nginx ]] && _old_ver=$(${NGINX_INPATH}/sbin/nginx -v 2>&1 | egrep -io '[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,2}')
+[[ -x ${NGINX_INPATH}/sbin/nginx ]] && _old_ver=$(${NGINX_INPATH}/sbin/nginx -v 2>&1 | cut -d/ -f2)
 printnew -green "最新版本: \033[33m${_new_ver}"
 if [[ -n ${_old_ver} ]]; then
     printnew -green "已装版本: \033[33m${_old_ver}"
@@ -287,6 +287,8 @@ fi
 #简单隐藏nginx信息
 sed -i '14s/nginx/warp3/g' src/core/nginx.h
 sed -i '22s/"NGINX"/"WARP3"/g' src/core/nginx.h
+sed -i '394s/nginx /warp3 /g' src/core/nginx.c
+sed -i '398s/nginx /warp3 /g' src/core/nginx.c
 
 printnew -green "编译和安装Nginx..."
 #--with-pcre=${PCRE_NAME} \

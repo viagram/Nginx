@@ -289,6 +289,7 @@ sed -i '14s/nginx/warp3/g' src/core/nginx.h
 sed -i '22s/"NGINX"/"WARP3"/g' src/core/nginx.h
 sed -i '394s/nginx /warp3 /g' src/core/nginx.c
 sed -i '398s/nginx /warp3 /g' src/core/nginx.c
+sed -i '49s/Server: nginx/Server: warp3 /g' src/http/ngx_http_header_filter_module.c
 
 printnew -green "编译和安装Nginx..."
 #--with-pcre=${PCRE_NAME} \
@@ -371,9 +372,11 @@ cp -rf 404.html ${NGINX_INPATH}/html/404.html
 cp -rf index.html ${NGINX_INPATH}/html/index.html
 sed -i 's/zip;/zip ipk apk tar gz tgz xz bz2;/g' ${NGINX_INPATH}/conf/mime.types
 
+sed -i 's/nginx/warp3/g' ${NGINX_INPATH}/conf/fastcgi.conf
+sed -i 's/nginx/warp3/g' ${NGINX_INPATH}/conf/fastcgi_params
 ! egrep -iq 'fastcgi_param  HTTP_HOST' ${NGINX_INPATH}/conf/fastcgi.conf && {
 	# 在第24行前插入模块
-	sed -i '24i\fastcgi_param  HTTP_HOST          $host;'  ${NGINX_INPATH}/conf/fastcgi.conf
+	sed -i '24i\fastcgi_param  HTTP_HOST          $host;'   ${NGINX_INPATH}/conf/fastcgi.conf
 	sed -i '/SERVER_NAME/d' ${NGINX_INPATH}/conf/fastcgi.conf
 	sed -i '24i\fastcgi_param  SERVER_NAME        $host;'  ${NGINX_INPATH}/conf/fastcgi.conf
 }

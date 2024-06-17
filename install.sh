@@ -284,6 +284,10 @@ if ! tar zxf ${ZLIB_NAME}.tar.gz; then
     exit 1
 fi
 
+#简单隐藏nginx信息
+sed -i '14s/nginx/warp3/g' src/nginx.h
+sed -i '22s/"NGINX"/"WARP3"/g' src/nginx.h
+
 printnew -green "编译和安装Nginx..."
 #--with-pcre=${PCRE_NAME} \
 ./configure --prefix=${NGINX_INPATH} \

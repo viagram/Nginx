@@ -263,9 +263,9 @@ cd ..
 #    printnew -red "解压pcre源码失败."
 #    exit 1
 #fi
-OPENSSL_URL=$(curl -sk https://www.openssl.org/source/ | egrep -io 'openssl-([0-9]{1,2}.){2,3}tar.gz' | sort -Vu | awk 'END{print "https://www.openssl.org/source/"$0}')
-OPENSSL_NAME=$(echo ${OPENSSL_URL} | egrep -io 'openssl-([0-9]{1,2}.){2,3}' | sed 's/.$//g')
-if ! curl -4kLo ${OPENSSL_NAME}.tar.gz ${OPENSSL_URL}; then
+OPENSSL_NAME=$(curl -skL https://openssl-library.org/source/ | egrep -io 'openssl-([0-9]{1,2}.){2,3}tar.gz' | sort -Vur | egrep -io 'openssl-([0-9]{1,2}.){2,3}' | sed 's/.$//g' | head -n1)
+OPENSSL_URL="https://github.com/openssl/openssl/releases/download/${OPENSSL_NAME}/${OPENSSL_NAME}.tar.gz"
+if ! curl -4kLo "${OPENSSL_NAME}.tar.gz" ${OPENSSL_URL}; then
     printnew -red "下载openssl源码失败."
     exit 1
 fi
